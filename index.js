@@ -10,9 +10,11 @@ function createWindow() {
       contextIsolation: true,
       enableRemoteModule: false
     }
+
   });
 
   mainWindow.loadFile('index.html');
+  mainWindow.setMenu(null);
 }
 
 app.whenReady().then(() => {
