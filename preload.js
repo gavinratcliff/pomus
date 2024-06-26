@@ -1,5 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  stopTimer: () => ipcRenderer.send('stop-timer')
-});
+  timerDone: () => ipcRenderer.send('timer-done')
+})
+

@@ -1,8 +1,15 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const sound = require("sound-play");
+
+var mainWindow = null;
+
+function timerDone() {
+    mainWindow.show();
+}
 
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 400,
     height: 300,
     webPreferences: {
@@ -20,11 +27,15 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow();
 
+  ipcMain.on('timer-done', timerDone);
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
+

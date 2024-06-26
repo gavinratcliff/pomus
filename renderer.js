@@ -11,10 +11,13 @@ const timerElement = document.getElementById('timer');
 const stopButton = document.getElementById('stopButton');
 const label = document.getElementById('label');
 
-const work_minutes = 25;
-const break_minutes = 5;
+const work_minutes = 1;
+const break_minutes = 1;
 
-const seconds_per_minute = 60;
+var beep = new Audio('beep.mp3');
+var click = new Audio('click.wav');
+
+const seconds_per_minute = 3;
 
 var timerInterval = null;
 
@@ -53,15 +56,26 @@ function updateTimer() {
     if (timeRemaining > 0) {
         timeRemaining--;
     } else {
+        window.electronAPI.timerDone();
+        beep.play();
+//        window.electronAPI.timerDone();
+
         switchStates();
+    }
+}
+
+function clickTimer() {
+    click.currentTime = 0;
+    click.play();
+    if (timer_state == TIMER_RUNNING) {
+        pauseTimer();
+    } else {
+        startTimer();
     }
 }
 
 function startTimer() {
     timer_state = TIMER_RUNNING;
-
-    stopButton.removeEventListener('click', startTimer);
-    stopButton.addEventListener('click', pauseTimer);
 
     timerInterval = setInterval(updateTimer, 1000);
 
@@ -72,9 +86,6 @@ function startTimer() {
 function pauseTimer() {
     timer_state = TIMER_PAUSED;
 
-    stopButton.removeEventListener('click', pauseTimer);
-    stopButton.addEventListener('click', startTimer);
-
     clearInterval(timerInterval);
 
     stopButton.innerText = "start";
@@ -82,7 +93,7 @@ function pauseTimer() {
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    stopButton.addEventListener('click', startTimer);
+    stopButton.addEventListener('click', clickTimer);
     startTimer();
 
     updateTimer();  // Initial call to display the timer immediately
